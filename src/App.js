@@ -1,25 +1,88 @@
-import logo from './logo.svg';
-import './App.css';
+import React, {useEffect, useState} from "react";
+import Comp from './components/Comp'
+import './styles/my-style.css'
 
-function App() {
+
+export default function App() {
+  const arrA = [];
+  const arrB = [];
+  const arrC = [];
+  const arrD = [];
+
+  const [dataA, setDataA] = useState([]);
+  const [dataB, setDataB] = useState([]);
+  const [dataC, setDataC] = useState([]);
+  const [dataD, setDataD] = useState([]);
+  const [sum, setSum] = useState(0);
+  const [count, setCount] = useState(0)
+
+  useEffect(() => {
+    fetch("/chairs.json")
+  
+    .then((response) => response.json())
+    .then(json => {
+      json.forEach(function(item) {
+        switch (item.section) {
+          case "A": 
+            arrA.push(item);
+            break;
+          case "B": 
+            arrB.push(item);
+            break;
+          case "C": 
+            arrC.push(item);
+            break;
+          case "D": 
+            arrD.push(item);  
+        } 
+      }) 
+      
+      setDataA(arrA);
+      setDataB(arrB);
+      setDataC(arrC);
+      setDataD(arrD)
+    }) 
+  }, [])
+
+  const updatePriceHandler = (price) => {
+    setSum((prevSum) => prevSum + price );
+    setCount((prevCount) => prevCount + 1);
+      
+  }
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+    <>
+      <div className="stage">
+        Stage 
+      </div>
 
-export default App;
+      <div className="sum-count">
+        <div className="count">Count : {count}</div>
+
+        <div className="sum">Sum : {sum}</div>
+      </div>
+
+      <div className="container">
+        
+        <div className="b"> 
+          {dataB.map((data) => (<Comp key={data.number} number={data.number} price={data.price} updatePriceHandler={updatePriceHandler}/>))}
+        </div>
+
+        <div className="a">
+          {dataA.map((data) => (<Comp key={data.number} number={data.number} price={data.price} updatePriceHandler={updatePriceHandler}/>))}
+        </div>
+
+        <div className="c">
+          {dataC.map((data) => (<Comp key={data.number} number={data.number} price={data.price} updatePriceHandler={updatePriceHandler}/>))}
+        </div>
+
+        <div className="d">
+          {dataD.map((data) => (<Comp key={data.number} number={data.number} price={data.price} updatePriceHandler={updatePriceHandler}/>))}
+        </div> 
+        
+      </div>
+
+    </>
+  )
+
+}
